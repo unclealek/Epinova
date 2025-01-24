@@ -1,0 +1,272 @@
+---
+import Layout from '../layouts/Layout.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import Footer from '../components/Footer.astro';
+import { getCollection } from 'astro:content';
+import { getLinkedInPosts } from '../lib/linkedin';
+
+const services = [
+  {
+    title: 'Business Planning',
+    description: 'Strategic business planning to help you map out your path to success. We work with you to develop comprehensive plans that align with your goals.',
+    href: '/services/planning',
+    image: '/BP.jpg' // Add your image path
+  },
+  {
+    title: 'Expert Consulting',
+    description: '1 on 1 consulting services to guide your business through challenges and opportunities. Our experienced team provides insights and solutions.',
+    href: '/services/consulting',
+    image: '/BC.png' // Add your image path
+  },
+  {
+    title: 'Training',
+    description: "Professional development and training programs designed to enhance your team's capabilities and drive organizational growth.' ",
+    href: '/services/training',
+    image: '/BT.png' // Add your image path
+  }
+];
+
+// Get and sort events by date (newest first)
+const events = (await getCollection('events'))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+  .slice(0, 3); // Only take the latest 3 events
+
+// Get LinkedIn posts (limit to 3)
+const linkedInPosts = (await getLinkedInPosts(import.meta.env.LINKEDIN_ACCESS_TOKEN || ''))
+  .slice(0, 3); // Only take the latest 3 posts
+---
+
+<Layout title="Welcome">
+ 
+     <!-- Hero Section -->
+     <header class="relative h-screen w-full">
+      <div class="absolute inset-0">
+        <img
+          src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80"
+          alt="Business meeting"
+          class="w-full h-full object-cover"
+        />
+        <div class="absolute inset-0 bg-black/50"></div>
+      </div>
+      <div class="relative h-full flex items-center justify-center ">
+        <div class="text-center text-white px-4 max-w-4xl mx-auto space-y-8">
+          <h1 class="text-5xl font-bold text-primary mb-8 racking-wide">Empowering Business Growth</h1>
+          <div class="space-y-4">
+            <p class="text-xl text-gray-200 leading-relaxed tracking-wide">
+              We specialise in international business development and strategic collaborations.
+            </p>
+            <p class="text-xl text-gray-200 leading-relaxed tracking-wide">
+              While also utilising existing resources, we assist our clients in locating solutions to their needs in a timely and fiscally responsible manner.
+            </p>
+            <p class="font-bold text-primary text-2xl tracking-wide">
+              We are focused on results.
+            </p>
+          </div>
+          <div class="mt-10">
+            <a
+              href="/contact"
+              class="inline-block bg-white text-primary font-semibold px-8 py-3 rounded-lg hover:bg-secondary transition-colors"
+            >
+              Get Started
+            </a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+  <!-- Services Section -->
+  <section class="mb-16 py-16">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-semibold text-center mb-8">Our Services</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {services.map(service => (
+          <ServiceCard {...service} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Latest Activities Section -->
+  <section class="mb-16 bg-gray-50 py-16">
+    <div class="max-w-7xl mx-auto px-4">
+      <h2 class="text-3xl font-semibold text-center mb-8">Latest Activities</h2>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Latest Events */}
+        {events.map(event => (
+          <div class="bg-white rounded-lg shadow-md overflow-hidden h-[400px] flex flex-col">
+            <div class="p-6 flex flex-col h-full">
+              {/* Event Image */}
+              <div class="mb-4 h-48 overflow-hidden rounded-lg">
+                <img 
+                  src={event.data.featuredImage} 
+                  alt={event.data.title}
+                  class="w-full h-full object-cover"
+                />
+              </div>
+              
+              {/* Event Details */}
+              <div class="flex-grow">
+                <h3 class="text-xl font-semibold mb-2 line-clamp-2">{event.data.title}</h3>
+                <p class="text-gray-500 mb-2">
+                  <span class="inline-block mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    </svg>
+                  </span>
+                  {event.data.location}
+                </p>
+                <p class="text-gray-500 mb-4">
+                  <span class="inline-block mr-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </span>
+                  {event.data.date}
+                </p>
+              </div>
+              
+              {/* Action Button */}
+              <div class="mt-auto">
+                <a
+                  href={`/events/${event.slug}`}
+                  class="inline-block bg-primary text-white px-4 py-2 rounded hover:bg-secondary transition-colors w-full text-center"
+                >
+                  Read More
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+  
+        {/* LinkedIn Posts */}
+        {linkedInPosts.map(post => (
+          <div class="bg-white rounded-lg shadow-md overflow-hidden h-[400px] flex flex-col">
+            <div class="p-6 flex flex-col h-full">
+              {/* Author Info */}
+              <div class="flex items-center mb-4">
+                <img src={post.author.image} alt={post.author.name} class="w-10 h-10 rounded-full mr-3">
+                <div>
+                  <p class="font-medium text-gray-900">{post.author.name}</p>
+                  <p class="text-sm text-gray-500">{post.created}</p>
+                </div>
+              </div>
+              
+              {/* Post Content */}
+              <div class="flex-grow">
+                <p class="text-gray-600 line-clamp-6">{post.text}</p>
+              </div>
+              
+              {/* Action Button */}
+              <div class="mt-auto">
+                <a
+                  href={`https://www.linkedin.com/feed/update/${post.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-block bg-[#0A66C2] text-white px-4 py-2 rounded hover:bg-[#004182] transition-colors w-full text-center"
+                >
+                  View on LinkedIn
+                </a>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+  
+      {/* View All Activities Button */}
+      <div class="text-center mt-8">
+        <a 
+          href="/events" 
+          class="inline-block bg-primary text-white px-6 py-3 rounded-lg hover:bg-secondary transition-colors"
+        >
+          View All Activities
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Highlights Section -->
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center relative">
+      {/* Add vertical dividers */}
+      <div class="hidden md:block absolute left-1/3 top-0 bottom-0 w-px bg-gray-200"></div>
+      <div class="hidden md:block absolute right-1/3 top-0 bottom-0 w-px bg-gray-200"></div>
+      
+      <!-- Years in Operation -->
+      <div class="p-6">
+        <div class="text-[4rem] font-bold text-secondary mb-2 font-serif">22</div>
+        <div class="text-2xl text-gray-900 font-light mb-2">years</div>
+        <div class="text-lg text-gray-600">serving clients in Globally</div>
+      </div>
+      
+      <!-- Business Trainings -->
+      <div class="p-6">
+        <div class="text-[4rem] font-bold text-secondary mb-2 font-serif">250+</div>
+        <div class="text-2xl text-gray-900 font-light mb-2">alumni</div>
+        <div class="text-lg text-gray-600">are entrepreneurs, business and government leaders</div>
+      </div>
+      
+      <!-- Consultations -->
+      <div class="p-6">
+        <div class="text-[4rem] font-bold text-secondary mb-2 font-serif">130+</div>
+        <div class="text-2xl text-gray-900 font-light mb-2">Consultations</div>
+        <div class="text-lg text-gray-600">across our global firm</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Company Logo Slider -->
+<section class="py-16 bg-gray-50 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4">
+    <h2 class="text-3xl font-semibold text-center mb-12">Companies We've Worked With</h2>
+    
+    <!-- First Slider Row -->
+    <div class="flex space-x-12 animate-scroll">
+      <div class="flex space-x-12 min-w-full">
+        {[1, 2, 3, 4, 5, 6].map((index) => (
+          <div class="w-48 h-24 flex items-center justify-center">
+            <img
+              src={`/logo/${index}.png`}
+              alt={`Company ${index}`}
+              class="max-w-full max-h-full object-contain transition-all duration-300"
+            />
+          </div>
+        ))}
+      </div>
+      <!-- Duplicate for seamless loop -->
+      <div class="flex space-x-12 min-w-full">
+        {[1, 2, 3, 4, 5, 6].map((index) => (
+          <div class="w-48 h-24 flex items-center justify-center">
+            <img
+              src={`/logo/${index}.png`}
+              alt={`Company ${index}`}
+              class="max-w-full max-h-full object-contain transition-all duration-300"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+<style>
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  .animate-scroll {
+    animation: scroll 30s linear infinite;
+  }
+
+  .animate-scroll:hover {
+    animation-play-state: paused;
+  }
+</style>
+
+  <Footer />
+</Layout>

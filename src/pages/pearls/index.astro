@@ -1,0 +1,64 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('pearls');
+---
+
+<Layout title="Pearls of Wisdom">
+  <div class="max-w-5xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold text-center mb-12">Pearls of Wisdom</h1>
+    
+    <div class="space-y-12">
+      {posts.map((post, index) => (
+        <>
+          <a href={`/pearls/${post.slug}`} class="block group">
+            <article class="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow max-w-4xl mx-auto">
+              <div class="grid md:grid-cols-2 gap-0">
+                <!-- Left: Image -->
+                <div class="h-[240px]">
+                  <img 
+                    src={post.data.featuredImage}
+                    alt={post.data.title} 
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+                
+                <!-- Right: Content -->
+                <div class="p-6 flex flex-col justify-between">
+                  <!-- Author Info -->
+                  <div class="flex items-center gap-3 mb-3">
+                    <img 
+                      src={post.data.author.image}
+                      alt={post.data.author.name}
+                      class="w-10 h-10 rounded-full"
+                    />
+                    <div>
+                      <h3 class="font-semibold text-gray-900">{post.data.author.name}</h3>
+                      <p class="text-sm text-gray-500">{post.data.date}</p>
+                    </div>
+                  </div>
+
+                  <!-- Title and Excerpt -->
+                  <div>
+                    <h2 class="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
+                      {post.data.title}
+                    </h2>
+                    <p class="text-gray-600 text-sm line-clamp-2">
+                      {post.data.excerpt}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </article>
+          </a>
+          
+          {/* Add divider if not the last item */}
+          {index !== posts.length - 1 && (
+            <div class="border-b border-gray-200 w-full max-w-4xl mx-auto"></div>
+          )}
+        </>
+      ))}
+    </div>
+  </div>
+</Layout>

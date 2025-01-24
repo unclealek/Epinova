@@ -1,0 +1,69 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+
+const founders = [
+  {
+    name: "Jarkko Surakka",
+    role: "Entrepreneur and CEO",
+    image: "/7.jpg",
+    linkedin: "https://www.linkedin.com/in/jarkko-surakka-3939ba39/",
+    bio: 'Coach, Teacher, Analyst, Writer and Leader Physicist in Medical Physics. "Excellence comes through experience and effort"',
+    about: "Through my company Epinova Oy for 20 years, I have been developing and implementing the most effective pedagogical and leadership solutions both in private and in public sector pedagogical institutes. I have done performance analysis, leadership coaching and strategic planning for private companies, public organisations in many areas of businesses.\n\nI have more than 20 years of experience in Higher Education from all levels of organisations; from Teaching to Creating University Strategies for the Future. I have been 10 years as member of Board of Directors in Savonia University of Applied Sciences.\n\nI have Teached, Coached and Mentored more than 10 000 people and hundreds of companies in my career.\n\nI am Author and co-author of many books used today in most Finnish Engineering Universities of Applied Sciences.\n\nI have worked around the World as invited Lecturer of Excellence and planned and directed international co-operative workshops, learning sessions, coaching sessions and courses in Universities at e.g. Australia, Switzerland, China, France, Russia, Holland and Slovenia.\n\nI am Founding member of Kuopio Steelers American Football team, where I held several positions for more than 20 years e.g a team captain for 15 years, Head coach and also as a General Manager of The Kuopio Steelers."
+  },
+  {
+    name: "Ken Shultz-Rabin",
+    role: "Search & Connect Business Developer",
+    image: "/ken.png",
+    linkedin: "https://www.linkedin.com/in/ken-schultz-rabin/",
+    bio: 'Entrepreneur, Connector and Business Developer. Founder of S&C Business Development',
+    about: "A California native who for 25 years has been in the wine and entertainment business, and for the last 10 years involved in initiating and nurturing business and strategic collaborations between the U.S. and the Nordics"
+  }
+];
+---
+
+<Layout title="About Us">
+  <div class="max-w-4xl mx-auto px-6 py-12">
+    <h1 class="text-4xl font-bold text-center mb-12">Team</h1>
+    
+    <div class="space-y-12">
+      {founders.map(founder => (
+        <div class="bg-white rounded-xl shadow-md p-8">
+          <div class="flex flex-col items-center mb-6">
+            <img 
+              src={founder.image} 
+              alt={founder.name} 
+              class="w-32 h-32 rounded-full mb-4 object-cover"
+            >
+            <h2 class="text-2xl font-semibold text-center">{founder.name}</h2>
+            <p class="text-gray-600 mb-2">{founder.role}</p>
+            
+            {/* LinkedIn Button */}
+            <a 
+              href={founder.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center text-blue-600 hover:text-blue-700"
+            >
+              <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+              </svg>
+              
+            </a>
+          </div>
+
+          <div class="space-y-4 text-gray-700">
+            <p class="text-lg font-medium text-center italic mb-6">
+              {founder.bio}
+            </p>
+            
+            {founder.about.split('\n\n').map(paragraph => (
+              <p class="leading-relaxed">{paragraph}</p>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</Layout>
+<Footer />

@@ -1,0 +1,44 @@
+---
+const navItems = [
+  { href: '/', label: 'Home' },
+  { href: '/pearls', label: 'Pearls of Wisdom' },
+  { href: '/events', label: 'Events' },
+  { href: '/about', label: 'About Us' },
+  { href: '/contact', label: 'Contact' },
+];
+import { Image } from 'astro:assets';
+import logo from '../../public/logo.avif';
+import logo2 from '../../public/logo2.avif';
+---
+
+<nav class="bg-[#323233] shadow-lg">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex justify-between h-16">
+      <div class="flex">
+        <a href="/" class="flex items-center space-x-2">
+          <div style={{
+                padding: '10px', // Padding inside the container
+                display: 'flex', // Flexbox for alignment
+                alignItems: 'center', // Center images vertically
+                justifyContent: 'center', // Center images horizontally
+            
+            }}>
+            <Image src={logo} alt="Logo Part 1" style={{ width: '70px', height: 'auto' }} />
+            <Image src={logo2} alt="Logo Part 2" style={{ width: '90px', height: 'auto' }} />
+        </div>
+            
+      </a>
+      </div>
+      <div class="flex items-center">
+        {navItems.map(item => (
+          <a
+            href={item.href}
+            class="px-3 py-2 rounded-md text-sm font-medium text-gray-200 hover:text-primary hover:bg-gray-50"
+          >
+            {item.label}
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</nav>

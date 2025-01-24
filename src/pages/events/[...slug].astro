@@ -1,0 +1,118 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const events = await getCollection('events');
+  // Sort events by date if needed
+  const sortedEvents = events.sort((a, b) => 
+    new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+  );
+
+  return sortedEvents.map((event, index) => ({
+    params: { slug: event.slug },
+    props: { 
+      event,
+      prev: index > 0 ? sortedEvents[index - 1] : null,
+      next: index < sortedEvents.length - 1 ? sortedEvents[index + 1] : null,
+    },
+  }));
+}
+
+const { event, prev, next } = Astro.props;
+const { Content } = await event.render();
+---
+
+<Layout title={event.data.title}>
+  <article class="max-w-4xl mx-auto px-6 py-12">
+    <!-- Back Button -->
+    <a 
+      href="/events" 
+      class="inline-flex items-center mb-8 text-gray-600 hover:text-primary transition-colors"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      Back to Events
+    </a>
+
+    <!-- Event Header Card -->
+    <div class="bg-white rounded-xl overflow-hidden shadow-md mb-12">
+      <!-- ... existing card content ... -->
+      <div class="p-6">
+        <!-- Title -->
+        <h1 class="text-3xl font-bold mb-6">
+          {event.data.title}
+        </h1>
+
+        <!-- Featured Image -->
+        <div class="h-[400px] mb-6">
+          <img 
+            src={event.data.featuredImage}
+            alt={event.data.title} 
+            class="w-full h-full object-cover rounded-lg"
+          />
+        </div>
+        
+        <!-- Author Info -->
+        <div class="flex items-center gap-3">
+          <img 
+            src={event.data.author.image}
+            alt={event.data.author.name}
+            class="w-10 h-10 rounded-full"
+          />
+          <div>
+            <h3 class="font-semibold text-gray-900">{event.data.author.name}</h3>
+            <p class="text-sm text-gray-500">{event.data.date}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Event Content -->
+    <div class="prose max-w-none mb-12">
+      <Content />
+    </div>
+
+    <!-- Navigation Buttons -->
+    <div class="border-t border-gray-200 pt-8">
+      <div class="flex justify-between items-center">
+        {prev && (
+          <a 
+            href={`/events/${prev.slug}`}
+            class="flex items-center text-gray-600 hover:text-primary transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+            </svg>
+            <div>
+              <div class="text-sm text-gray-500">Previous Event</div>
+              <div class="font-medium">{prev.data.title}</div>
+            </div>
+          </a>
+        )}
+
+        {next && (
+          <a 
+            href={`/events/${next.slug}`}
+            class="flex items-center text-right text-gray-600 hover:text-primary transition-colors ml-auto"
+          >
+            <div>
+              <div class="text-sm text-gray-500">Next Event</div>
+              <div class="font-medium">{next.data.title}</div>
+            </div>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+            </svg>
+          </a>
+        )}
+      </div>
+    </div>
+  </article>
+</Layout>
+
+<style>
+  .prose {
+    @apply text-gray-700 leading-relaxed;
+  }
+</style>

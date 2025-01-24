@@ -1,0 +1,63 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('pearls');
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<Layout title={post.data.title}>
+  <article class="max-w-4xl mx-auto px-6 py-12">
+    <!-- Blog Header Card -->
+    <div class="bg-white rounded-xl overflow-hidden shadow-md mb-12">
+      <div class="p-6">
+        <!-- Title -->
+        <h1 class="text-3xl font-bold mb-6">
+          {post.data.title}
+        </h1>
+
+        <!-- Featured Image -->
+        <div class="h-[400px] mb-6">
+          <img 
+            src={post.data.featuredImage}
+            alt={post.data.title} 
+            class="w-full h-full object-cover rounded-lg"
+          />
+        </div>
+        
+        <!-- Author Info -->
+        <div class="flex items-center gap-3">
+          <img 
+            src={post.data.author.image}
+            alt={post.data.author.name}
+            class="w-10 h-10 rounded-full"
+          />
+          <div>
+            <h3 class="font-semibold text-gray-900">{post.data.author.name}</h3>
+            <p class="text-sm text-gray-500">{post.data.date}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Article Content -->
+    <div class="prose max-w-none">
+      <Content />
+    </div>
+  </article>
+  
+</Layout>
+
+<style>
+  .prose {
+    @apply text-gray-700 leading-relaxed;
+  }
+</style>
